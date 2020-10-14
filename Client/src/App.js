@@ -12,8 +12,6 @@ function App() {
       <Layout>
         <AddMission></AddMission>
         <Main></Main>
-        {/* <Main></Main>
-      <Sidebar></Sidebar> */}
       </Layout>
     </ThemeProvider>
   );
