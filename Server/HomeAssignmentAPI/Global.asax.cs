@@ -7,13 +7,16 @@ using System.Web.Routing;
 
 namespace HomeAssignmentAPI
 {
-    public class WebAPIApplication : System.Web.HttpApplication
+    public class WebApiApplication : System.Web.HttpApplication
     {
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
+        }
 
-            //other configuration
+        protected void Session_Start(object sender, EventArgs e)
+        {
+            Session["user"] = Session.SessionID;
         }
     }
 }

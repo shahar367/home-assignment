@@ -8,6 +8,5 @@ namespace DAL
 {
     public class Dal
     {
-        private static Dictionary<string, Mission> UserMssions = new Dictionary<string, Mission>();
     }
 }

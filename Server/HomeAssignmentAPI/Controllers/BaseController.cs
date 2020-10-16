@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using System.Web;
 using System.Web.Http;
 using System.Web.SessionState;
@@ -11,25 +9,14 @@ namespace HomeAssignmentAPI.Controllers
 {
     public class BaseController : ApiController
     {
-        public string UserID
+        public string UserID { get; set; }
+
+        public void InitUserID(string SessionID)
         {
-            get
-            {                
-                return UserID;
-            }
-            set
+            if (UserID == null)
             {
-                if (UserID == null)
-                {
-                    UserID = GetSessionID();
-                }
+                UserID = SessionID;
             }
         }
-        private string GetSessionID()
-        {
-            return "user" + System.Web.HttpContext.Current.Session.SessionID;
-        }
-
-
     }
 }
