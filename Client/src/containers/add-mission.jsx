@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { Box, Button, Container, Input, makeStyles, TextField } from '@material-ui/core';
 import { green, lightBlue } from '@material-ui/core/colors';
+import { useForm } from 'react-hook-form';
 // import Animations from '../css/animation.module.css';
 
 const useStyles = makeStyles({
-    container: {
+    form: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
+        height: '100%',
         '& > div': {
-            margin: 10,
+            marginBottom: 10,
             minWidth: 'calc(50% + 10px)'
         }
     },
@@ -33,43 +35,55 @@ const useStyles = makeStyles({
     }
 });
 
-let AddMission = () => {
+let AddMission = ({ handleUploadMission }) => {
 
     const [missionTitle, setMissionTitle] = useState('');
 
-    const [missionImage, setMissionImage] = useState({
+    const [missionImage, setMissionImage] = useState([{
         name: ''
-    });
+    }]);
+
+    console.log(missionImage);
 
     const classes = useStyles();
 
-    const handleSubmitMission = () => {
+    const { register, handleSubmit } = useForm();
 
+    const handleSubmitMission = () => {
+        handleUploadMission({
+            missionTitle,
+            missionImage
+        })
     }
 
     const handleMissionTitleChange = (value) => {
-
+        setMissionTitle(value)
     }
 
-    const handlelImageChange = (imageFile) => {
-        setMissionImage(imageFile)
+    const handlelImageChange = (imageFiles) => {
+        imageFiles = Array.from(imageFiles)
+        setMissionImage(imageFiles)
     }
 
     return (
-        <Container className={classes.container}>
-            <TextField label='Mission Title' value={missionTitle} placeholder={'Enter mission title'} required
-                onChange={(event) => handleMissionTitleChange(event.target.value)}>
-            </TextField>
-            <Box component='div'>
-                <Button variant='contained' component='label' className={classes.uploadImageButton}>
-                    Upload Image
-                    <Input type="file" style={{ display: "none" }} onChange={(event) => handlelImageChange(event.target.files[0])} />
-                </Button>
-                <Input component='label' disabled value={missionImage.name}></Input>
-            </Box>
-            <Button variant='contained' className={classes.submitButton} onClick={handleSubmitMission}>
-                Add Mission
+        <Container >
+            <form className={classes.form} onSubmit={handleSubmit(handleSubmitMission)}>
+                <TextField inputProps={{ name: "missionTitle" }} label='Mission Title' value={missionTitle} placeholder={'Enter mission title'} ref={register({ required: true })} required
+                    onChange={(event) => handleMissionTitleChange(event.target.value)}
+                    error={missionTitle === ""}
+                    helperText={missionTitle === "" ? 'Empty field!' : ' '}>
+                </TextField>
+                <Box component='div'>
+                    <Button variant='contained' component='label' className={classes.uploadImageButton}>
+                        Upload Image
+                    <Input type="file" inputProps={{ accept: "image/*" }} style={{ display: "none" }} onChange={(event) => handlelImageChange(event.target.files)} />
+                    </Button>
+                    <Input component='label' disabled value={missionImage[0].name}></Input>
+                </Box>
+                <Button variant='contained' className={classes.submitButton} type='submit'>
+                    Add Mission
             </Button>
+            </form>
         </Container>
     )
 }

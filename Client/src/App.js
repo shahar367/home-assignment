@@ -8,7 +8,9 @@ import theme from './css/theme';
 import fetch from 'isomorphic-fetch';
 
 const fetchUser = async (UserToken) => {
-  const userID = await fetch("http://localhost/HomeAssignmentAPI/api/main/SetUserID", {
+  const { REACT_APP_API_BASE_URL } = process.env;
+  const requestUrl = REACT_APP_API_BASE_URL + 'SetUserID';
+  const userID = await fetch(requestUrl, {
     method: "POST",
     body: JSON.stringify(UserToken),
     headers: {
@@ -23,9 +25,25 @@ const fetchUser = async (UserToken) => {
   return userID;
 }
 
+const uploadMission = (mission, userID) => {
+  const { REACT_APP_API_BASE_URL } = process.env;
+  const requestUrl = REACT_APP_API_BASE_URL + 'AddMission';
+  const formData = new FormData();
+  mission.missionImage.forEach((file, i) => {
+    formData.append(i, file, file.name);
+  })
+  formData.append('UserID', userID);
+  formData.append('MissionTitle', mission.missionTitle);
+  fetch(requestUrl, {
+    method: "POST",
+    body: formData
+  }).then((reseponse) => {
+  });
+}
+
 function App() {
 
-  const [userID, setUserID] = useState('');
+  let [userID, setUserID] = useState('');
 
   useEffect(() => {
     const { REACT_APP_LOCAL_STORGE_KEY } = process.env;
@@ -34,15 +52,21 @@ function App() {
       UserToken = `user-${Date.now()}`
       window.localStorage.setItem(REACT_APP_LOCAL_STORGE_KEY, UserToken)
     }
-    setUserID(fetchUser(UserToken));
-  })
+    (async () => setUserID(await fetchUser(UserToken)))();
+  }, [])
+
+  const handleUploadMission = async (mission) => {
+    await uploadMission(mission, userID);
+  }
 
   return (
     <ThemeProvider theme={theme}>
-      <Layout>
-        <AddMission userID={userID}></AddMission>
-        <Main userID={userID}></Main>
-      </Layout>
+      {userID && userID.includes('user') !== undefined ?
+        <Layout>
+          <AddMission handleUploadMission={handleUploadMission}></AddMission>
+          <Main userID={userID}></Main>
+        </Layout>
+        : ''}
     </ThemeProvider>
   );
 }

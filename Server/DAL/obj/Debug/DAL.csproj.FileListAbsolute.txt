@@ -3,3 +3,4 @@ C:\Users\lavit\home-assignment\Server\DAL\bin\Debug\DAL.pdb
 C:\Users\lavit\home-assignment\Server\DAL\obj\Debug\DAL.csproj.CoreCompileInputs.cache
 C:\Users\lavit\home-assignment\Server\DAL\obj\Debug\DAL.dll
 C:\Users\lavit\home-assignment\Server\DAL\obj\Debug\DAL.pdb
+C:\Users\lavit\home-assignment\Server\DAL\obj\Debug\DAL.csprojAssemblyReference.cache
