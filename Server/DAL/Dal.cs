@@ -43,7 +43,6 @@ namespace DAL
         public List<Mission> GetUserMissions(string userID)
         {
             var missions = DB_Dictionary.Where(DB => DB.Value.UserID == userID);
-            int count = missions.Count();
             List<Mission> userMissions = missions.Select(mission => mission.Value).ToList();
             return userMissions;
         }
