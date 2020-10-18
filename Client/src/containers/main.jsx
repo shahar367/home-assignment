@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { Box, Button, Container, Input, makeStyles, Paper, TextField } from '@material-ui/core';
-import { green, lightBlue } from '@material-ui/core/colors';
+import React, { useEffect } from 'react';
+import { Button, Container, makeStyles, Paper } from '@material-ui/core';
 import MissionCard from '../components/mission-card';
 
 // import Animations from '../css/animation.module.css';
@@ -30,23 +29,27 @@ const useStyles = makeStyles({
     }
 });
 
-let Main = () => {
+let Main = ({ missions, handleShowAllMissions, handleFetchUserMissions }) => {
 
     const classes = useStyles();
 
-    const testImage = process.env.PUBLIC_URL + 'images/test1.jpg';
+    useEffect(() => {
+        handleFetchUserMissions();
+    }, [])
 
     return (
         <Container className={classes.container}>
             <Container className={classes.missionContainer}>
-                <MissionCard key={`image1`} title="test" image={testImage} />
-                <MissionCard key={`image2`} title="test" image={testImage} />
-                <MissionCard key={`image3`} title="test" image={testImage} />
-                <MissionCard key={`image4`} title="test" image={testImage} />
-                <MissionCard key={`image5`} title="test" image={testImage} />
+                {missions.map((mission, i) => {
+                    const fixedImagePath = mission.MissionImagePath.replace(/\\/g,'/');
+                    console.log(fixedImagePath);
+                        return(
+                            <MissionCard key={`${mission.MissionTitle}-${i}`} title={mission.MissionTitle} image={fixedImagePath} />
+                        )
+                })}
             </Container>
             <Paper elevation={0} className={classes.showAllContainer}>
-                <Button variant='contained' color='primary'>Show All Missions</Button>
+                <Button variant='contained' color='primary' onClick={handleShowAllMissions}>Show All Missions</Button>
             </Paper>
         </Container>
     )

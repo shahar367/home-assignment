@@ -43,7 +43,6 @@
   <ItemGroup>
     <Compile Include="Dal.cs" />
     <Compile Include="Mission.cs" />
-    <Compile Include="MissionImage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -12,5 +12,13 @@ namespace DAL
     {
         public string UserID { get; set; }
         public string MissionTitle { get; set; }
+        public string MissionImagePath { get; set; }
+
+        public Mission(string userID,string missionTitle,string missionImagePath)
+        {
+            UserID = userID;
+            MissionTitle = missionTitle;
+            MissionImagePath = missionImagePath;
+        }
     }
 }

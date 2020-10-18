@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Net.Http.Headers;
 using System.Reflection;
 using System.Web;
 using System.Web.Http;
@@ -15,14 +14,14 @@ namespace HomeAssignmentAPI.Controllers
     public class MainController : BaseController
     {
         [HttpPost]
-        public HttpResponseMessage SetUserID([FromBody]dynamic UserToken)
+        public HttpResponseMessage SetUserID([FromBody] dynamic UserToken)
         {
             try
             {
                 InitUserID(UserToken);
                 return Request.CreateResponse(HttpStatusCode.OK, UserID);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
             }
@@ -33,17 +32,69 @@ namespace HomeAssignmentAPI.Controllers
         {
             try
             {
-                var imageFile = HttpContext.Current.Request.Files.Count > 0
+                string CurrentUserID = HttpContext.Current.Request.Form["UserID"];
+                string MissionTitle = HttpContext.Current.Request.Form["MissionTitle"];
+                var ImageFile = HttpContext.Current.Request.Files.Count > 0
                     ? HttpContext.Current.Request.Files[0]
                     : null;
-                string UserID = HttpContext.Current.Request.Form["UserID"];
-                string MissionTitle = HttpContext.Current.Request.Form["MissionTitle"];
-                return Request.CreateResponse(HttpStatusCode.OK, "");
+                string MissionImagePath = SaveImage(HttpContext.Current, ImageFile, CurrentUserID, MissionTitle);
+                Mission NewMission = Dal.Instance.AddMission(CurrentUserID, MissionTitle, MissionImagePath);
+                return Request.CreateResponse(HttpStatusCode.OK, NewMission);
             }
             catch (Exception ex)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
             }
+        }
+
+        [HttpGet]
+        public HttpResponseMessage GetUserMissions(string UserID)
+        {
+            try
+            {
+                List<Mission> UserMissions = Dal.Instance.GetUserMissions(UserID);
+                return Request.CreateResponse(HttpStatusCode.OK, UserMissions);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
+            }
+        }
+
+        [HttpGet]
+        public HttpResponseMessage GetAllMission()
+        {
+            try
+            {
+                List<Mission> AllMissions = Dal.Instance.GetAllMission();
+                return Request.CreateResponse(HttpStatusCode.OK, AllMissions);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
+            }
+        }
+
+        private void EnsureDirectoriesExist(HttpServerUtility Server)
+        {
+            if (!Directory.Exists(Server.MapPath(@"~/pix/")))
+            {
+                Directory.CreateDirectory(Server.MapPath(@"~/pix/"));
+            }
+        }
+
+        private string SaveImage(HttpContext context, HttpPostedFile ImageFile, string CurrentUserID, string MissionTitle)
+        {
+            var Server = context.Server;
+            EnsureDirectoriesExist(Server);
+            string NewPath = Server.MapPath(@"~/pix/" + ImageFile.FileName);
+            if (File.Exists(NewPath))
+            {
+                return NewPath;
+            }
+            ImageFile.SaveAs(NewPath);
+            return NewPath;
+            ;
         }
     }
 }

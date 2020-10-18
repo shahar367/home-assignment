@@ -35,7 +35,7 @@ const useStyles = makeStyles({
     }
 });
 
-let AddMission = ({ handleUploadMission }) => {
+let AddMission = ({ handleAddMission }) => {
 
     const [missionTitle, setMissionTitle] = useState('');
 
@@ -43,17 +43,19 @@ let AddMission = ({ handleUploadMission }) => {
         name: ''
     }]);
 
-    console.log(missionImage);
-
     const classes = useStyles();
 
     const { register, handleSubmit } = useForm();
 
     const handleSubmitMission = () => {
-        handleUploadMission({
+        handleAddMission({
             missionTitle,
             missionImage
         })
+        setMissionTitle('');
+        setMissionImage([{
+            name: ''
+        }])
     }
 
     const handleMissionTitleChange = (value) => {
@@ -68,7 +70,7 @@ let AddMission = ({ handleUploadMission }) => {
     return (
         <Container >
             <form className={classes.form} onSubmit={handleSubmit(handleSubmitMission)}>
-                <TextField inputProps={{ name: "missionTitle" }} label='Mission Title' value={missionTitle} placeholder={'Enter mission title'} ref={register({ required: true })} required
+                <TextField autoComplete={false} name="missionTitle-conteiner" InputLabelProps={{name: "missionTitle-label"}} inputProps={{ name: "missionTitle" }} label='Mission Title' value={missionTitle} placeholder={'Enter mission title'} ref={register({ required: true })} required
                     onChange={(event) => handleMissionTitleChange(event.target.value)}
                     error={missionTitle === ""}
                     helperText={missionTitle === "" ? 'Empty field!' : ' '}>
