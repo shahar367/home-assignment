@@ -1,7 +1,7 @@
 import { Box, Card, CardHeader, CardMedia, makeStyles } from '@material-ui/core';
 import React from 'react';
 
-const useStyles = makeStyles({ 
+const useStyles = makeStyles({
     card: {
         flex: '0 1 calc(50% - 10px)',
         margin: '10px 0px',

@@ -47,7 +47,7 @@ namespace DAL
             return userMissions;
         }
 
-        public List<Mission> GetAllMission()
+        public List<Mission> GetAllMission() 
         {
             return DB_Dictionary.Values.ToList();
         }
